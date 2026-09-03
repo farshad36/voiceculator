@@ -1,10 +1,10 @@
-name: Build Flutter APK
+name: Build Flutter AAB
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -21,17 +21,36 @@ jobs:
           channel: stable
           cache: true
 
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Decode Keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/upload-keystore.jks
+
+      - name: Create key.properties
+        run: |
+          cat > android/key.properties <<EOF
+          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          keyAlias=${{ secrets.KEY_ALIAS }}
+          storeFile=upload-keystore.jks
+          EOF
+
       - name: Flutter Doctor
         run: flutter doctor -v
 
       - name: Get Dependencies
         run: flutter pub get
 
-      - name: Build APK
-        run: flutter build apk --release
+      - name: Build Signed AAB
+        run: flutter build appbundle --release
 
-      - name: Upload APK
+      - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
-          name: app-release
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: app-release-aab
+          path: build/app/outputs/bundle/release/app-release.aab
