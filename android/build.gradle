@@ -3,7 +3,7 @@ allprojects {
         //maven { url = uri("https://maven.myket.ir/") }
         google()
         mavenCentral()
-        maven{ url "https://pub-azs.ir/api/mavens/" }
+        //maven{ url "https://pub-azs.ir/api/mavens/" }
     }
 }
 
