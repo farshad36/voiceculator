@@ -2,7 +2,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-            maven{ url "https://pub-azs.ir/api/mavens/" }
+        //    maven{ url "https://pub-azs.ir/api/mavens/" }
 
     }
 }
